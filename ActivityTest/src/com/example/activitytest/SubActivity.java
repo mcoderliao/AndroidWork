@@ -1,6 +1,7 @@
 package com.example.activitytest;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -61,10 +62,6 @@ public class SubActivity extends Activity {
 		super.onPause();
 	}
 
-	public SubActivity() {
-		// TODO Auto-generated constructor stub
-	}
-
 	@Override
 	protected void onRestoreInstanceState(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -79,6 +76,12 @@ public class SubActivity extends Activity {
 		Log.d(TAG, "onSaveInstanceState");
 		outState.putString("testbundle", "Unexpected destory");
 		super.onSaveInstanceState(outState);
+	}
+	@Override
+	protected void onNewIntent(Intent intent) {
+		// TODO Auto-generated method stub
+		Log.d(TAG, "onNewIntent");
+		super.onNewIntent(intent);
 	}
 
 }

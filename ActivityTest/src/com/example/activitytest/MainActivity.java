@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.widget.SimpleCursorAdapter.ViewBinder;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -12,12 +13,18 @@ import android.view.View.OnClickListener;
 
 public class MainActivity extends Activity implements OnClickListener {
 	final String TAG = "ActivityTest";
+	int mCreateCounts = 0;
+	Handler mHandler = new Handler();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		Log.v(TAG, "MainActivity::OnCreate");
+		findViewById(R.id.btn_singleinstancemode).setOnClickListener(this);
+		findViewById(R.id.btn_singletaskmode).setOnClickListener(this);
+		findViewById(R.id.btn_singletopmode).setOnClickListener(this);
+		findViewById(R.id.btn_standmode).setOnClickListener(this);
 	}
 
 	@Override
@@ -78,6 +85,24 @@ public class MainActivity extends Activity implements OnClickListener {
 			break;
 		case R.id.btn_standmode:
 
+			Runnable createActivityRunnable = new Runnable() {
+				@Override
+				public void run() {
+					// TODO Auto-generated method stub
+					mCreateCounts++;
+					Intent intent = new Intent();
+					intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP|Intent.FLAG_ACTIVITY_s);
+					// intent
+					intent.setComponent(new ComponentName(getPackageName(),
+							"com.example.activitytest.SubActivity"));
+					startActivity(intent);
+					if (mCreateCounts < 4) {
+						mHandler.postDelayed(this, 1000);
+					}
+				}
+			};
+			mHandler.postDelayed(createActivityRunnable, 10);
+
 			break;
 		default:
 			break;
@@ -89,11 +114,11 @@ public class MainActivity extends Activity implements OnClickListener {
 		Intent intent = new Intent();
 		intent.setPackage(getPackageName());
 		intent.setClassName(this, "com.example.activitytest.SubActivity");
-		String packageString = getPackageName();  
+		String packageString = getPackageName();
 
 		// intent
-		// intent.setComponent(new ComponentName(getPackageName(),
-		// "com.example.activitytest.SubActivity"));
+		intent.setComponent(new ComponentName(getPackageName(),
+				"com.example.activitytest.SubActivity"));
 		if (keyCode != KeyEvent.KEYCODE_BACK) {
 			startActivity(intent);
 		}
